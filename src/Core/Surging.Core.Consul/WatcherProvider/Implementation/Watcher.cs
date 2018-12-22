@@ -1,0 +1,22 @@
+﻿using System.Threading.Tasks;
+
+namespace Surging.Core.Consul.WatcherProvider
+{
+    public abstract class Watcher
+    {
+        protected Watcher()
+        {
+        }
+
+        public abstract Task Process();
+
+        public static class Event
+        {
+            public enum KeeperState
+            {
+                Disconnected = 0,
+                SyncConnected = 3,
+            }
+        }
+    }
+}

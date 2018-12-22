@@ -1,0 +1,21 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.6.2-bate.16</Version>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl></RepositoryUrl>
+	  <Company>Liuhongliang</Company>
+	  <Authors>Liuhongliang</Authors>
+    <Product>Surging Micro Service Framework</Product>
+    <Copyright>Copyright © Liuhongliang All Rights Reserved.</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' ">
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+ 
+
+</Project>
