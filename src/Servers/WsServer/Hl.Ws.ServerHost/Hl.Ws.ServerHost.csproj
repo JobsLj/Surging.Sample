@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\..\Shares\Props\common.props" />
+  <Import Project="..\..\..\Shares\Props\hostpackage.props" />
+  <ItemGroup>
+    <PackageReference Include="Surging.Core.Protocol.WS" Version="0.5.0-bate.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hl.Ws.Application\Hl.Ws.Application.csproj" />
+  </ItemGroup>
+</Project>

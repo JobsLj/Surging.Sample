@@ -1,0 +1,8 @@
+<Project>
+  <ItemGroup>
+    <PackageReference Include="Surging.Core.AutoMapper" Version="0.5.0-bate.1" />
+    <PackageReference Include="Surging.Core.CPlatform" Version="0.5.0-bate.1" />
+    <PackageReference Include="Surging.Core.System" Version="0.5.0-bate.1" />
+	<PackageReference Include="Surging.Core.ProxyGenerator" Version="0.5.0-bate.1" />
+  </ItemGroup>
+</Project>

@@ -1,4 +1,11 @@
-﻿namespace Surging.Core.Protocol.WS
+﻿using Surging.Core.CPlatform;
+using Surging.Core.CPlatform.Runtime.Server.Implementation;
+using Surging.Core.CPlatform.Transport;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace Surging.Core.Protocol.WS
 {
     public class WSServiceHost : ServiceHostAbstract
     {

@@ -1,4 +1,6 @@
-﻿namespace Surging.Core.Protocol.WS.Attributes
+﻿using System;
+
+namespace Surging.Core.Protocol.WS.Attributes
 {
     public class BehaviorContractAttribute : Attribute
     {

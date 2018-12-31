@@ -1,4 +1,7 @@
-﻿namespace Surging.Core.Protocol.WS.Runtime
+﻿using System;
+using WebSocketCore.Server;
+
+namespace Surging.Core.Protocol.WS.Runtime
 {
     public class WSServiceEntry
     {

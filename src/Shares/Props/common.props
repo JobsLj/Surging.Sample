@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.0.1</Version>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageProjectUrl>https://github.com/liuhll/Surging.Sample</PackageProjectUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git@github.com:liuhll/Surging.Sample.git</RepositoryUrl>
+	<Company>Hl.CRM</Company>
+	<Authors>Liuhongliang</Authors>
+    <Product>Surging Micro Service Framework</Product>
+    <Copyright>Copyright © Liuhongliang All Rights Reserved.</Copyright>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' ">
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
+</Project>
+

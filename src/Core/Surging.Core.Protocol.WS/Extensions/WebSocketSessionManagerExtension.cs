@@ -1,4 +1,9 @@
-﻿namespace Surging.Core.Protocol.WS.Extensions
+﻿using Newtonsoft.Json;
+using System;
+using System.Text;
+using WebSocketCore.Server;
+
+namespace Surging.Core.Protocol.WS.Extensions
 {
     public static class WebSocketSessionManagerExtension
     {

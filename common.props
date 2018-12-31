@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Version>0.6.2-bate.16</Version>
+    <Version>0.5.0-bate.1</Version>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageIconUrl></PackageIconUrl>
     <PackageProjectUrl></PackageProjectUrl>

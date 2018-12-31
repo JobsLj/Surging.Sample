@@ -1,0 +1,68 @@
+﻿{
+  "Surging": {
+    "Address": "${Srcp_Server_Address}|127.0.0.1",
+    "WatchInterval": 30,
+    "Port": "${Srcp_Server_Port}|100",
+    "MappingIp": "${Mapping_Ip}",
+    "MappingPort": "${Mapping_Port}",
+    "Token": "true",
+    "MaxConcurrentRequests": 20,
+    "ExecutionTimeoutInMilliseconds": 30000,
+    "Protocol": "${Protocol}|None", //HttpTcpNone
+    "Libuv": true,
+    "RootPath": "${RootPath}|D:\\userapp",
+    "Ports": {
+      "HttpPort": "${HttpPort}|8080",
+      "WSPort": "${WSPort}|96"
+    },
+    "RequestCacheEnabled": false,
+    "Environment": "${Environment}|Development",
+    "ForceDisplayStackTrace": "${ForceDisplayStackTrace}|false",
+    "Packages": [
+      {
+        "TypeName": "EnginePartModule",
+        "Using": "${UseEngineParts}|DotNettyModule;NLogModule;ConsulModule;EventBusRabbitMQModule;CachingModule"
+      }
+    ]
+  },
+  "dbSetting": {
+    "dbType": "Oracle", //Mysql SqlServer, Oracle,
+    "connectionString": "Data Source=192.168.0.100:1521/orcl;User Id=foc3;Password=sunwin;"
+  },
+  "Automapper": {
+    "Assemblies": "SunWin.IfocService.*.IApplication;SunWin.IfocService.*.Domain"
+  },
+  "Swagger": {
+    "Version": "${SwaggerVersion}|v1",
+    "Title": "${SwaggerTitle}|SunWin.IfocService.IdentityHost",
+    "Description": "${SwaggerDes}|身份认证与授权服务",
+    "Contact": {
+      "Name": "API Support",
+      "Url": "https://gitee.com/GFCM/SunWin.Ifoc.Service",
+      "Email": "liuhongliang@wintelia.com"
+    },
+    "Authorization": {
+      "EnableAuthorization": true,
+      "CacheMode": "ddlCache.Redis",
+      "AccessTokenExpire": 100,
+      "AuthorizationRoutePath": "",
+      "AuthorizationServiceKey": ""
+    }
+  },
+  "Logging": {
+    "Debug": {
+      "LogLevel": {
+        "Default": "Debug"
+      }
+    },
+    "Console": {
+      "IncludeScopes": true,
+      "LogLevel": {
+        "Default": "${LogLevel}|Debug"
+      }
+    },
+    "LogLevel": {
+      "Default": "${LogLevel}|Debug"
+    }
+  }
+}

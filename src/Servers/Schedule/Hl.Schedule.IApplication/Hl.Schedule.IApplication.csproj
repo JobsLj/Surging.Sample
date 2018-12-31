@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+ <Import Project="..\..\..\Shares\Props\common.props" />
+ <Import Project="..\..\..\Shares\Props\applicationpackage.props" />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+
+</Project>

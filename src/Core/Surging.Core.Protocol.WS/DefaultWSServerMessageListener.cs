@@ -1,5 +1,14 @@
-﻿using Surging.Core.Protocol.WS.Configurations;
+﻿using Microsoft.Extensions.Logging;
+using Surging.Core.CPlatform.Messages;
+using Surging.Core.CPlatform.Transport;
+using Surging.Core.Protocol.WS.Configurations;
 using Surging.Core.Protocol.WS.Runtime;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using WebSocketCore.Server;
 
 namespace Surging.Core.Protocol.WS
 {
@@ -34,11 +43,11 @@ namespace Surging.Core.Protocol.WS
                 _wssv.WaitTime = TimeSpan.FromSeconds(_options.WaitTime);
                 _wssv.Start();
                 if (_logger.IsEnabled(LogLevel.Debug))
-                    _logger.LogDebug($"WS服务主机启动成功，监听地址：{endPoint}。");
+                    _logger.LogDebug($"WS服务主机启动成功，监听地址：{endPoint}");
             }
             catch
             {
-                _logger.LogError($"WS服务主机启动失败，监听地址：{endPoint}。 ");
+                _logger.LogError($"WS服务主机启动失败，监听地址：{endPoint}");
             }
         }
 
