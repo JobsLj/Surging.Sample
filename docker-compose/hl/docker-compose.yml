@@ -1,0 +1,103 @@
+version: '3.4'
+
+services: 
+  hlservice.customer:
+    image: hlservice/customer:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/Customer/Hl.Customer.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/Customer/Hl.Customer.ServerHost
+        host_name: Hl.Customer.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.identity:
+    image: hlservice/identity:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/Identity/Hl.Identity.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/Identity/Hl.Identity.ServerHost
+        host_name: Hl.Identity.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.order:
+    image: hlservice/order:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/Order/Hl.Order.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/Order/Hl.Order.ServerHost
+        host_name: Hl.Order.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.product:
+    image: hlservice/product:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/Product/Hl.Product.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/Product/Hl.Product.ServerHost
+        host_name: Hl.Product.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.schedule:
+    image: hlservice/schedule:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/Schedule/Hl.Schedule.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/Schedule/Hl.Schedule.ServerHost
+        host_name: Hl.Schedule.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.stock:
+    image: hlservice/stock:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/Stock/Hl.Schedule.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/Stock/Hl.Stock.ServerHost
+        host_name: Hl.Stock.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.systemmanager:
+    image: hlservice/systemmanager:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/SystemManager/Hl.SystemManager.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/SystemManager/Hl.SystemManager.ServerHost
+        host_name: Hl.SystemManager.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+  hlservice.wsserver:
+    image: hlservice/wsserver:${TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: src/Servers/WsServer/Hl.Ws.ServerHost/Dockerfile
+      args:
+        host_workdir: src/Servers/WsServer/Hl.Ws.ServerHost
+        host_name: Hl.Ws.ServerHost.dll
+        sln_name: Surging.Hl.sln
+    networks:
+      - src_srcp_demo_service_net
+
+networks:
+  src_srcp_demo_service_net: 
+    external:
+      name: docker-compose_surging_demo_service_net

@@ -1,8 +1,8 @@
 ﻿{
   "Surging": {
-    "Address": "${Srcp_Server_Address}|127.0.0.1",
+    "Address": "${Surging_Server_Address}|0.0.0.0",
     "WatchInterval": 30,
-    "Port": "${Srcp_Server_Port}|100",
+    "Port": "${Surging_Server_Port}|100",
     "MappingIp": "${Mapping_Ip}",
     "MappingPort": "${Mapping_Port}",
     "Token": "true",
