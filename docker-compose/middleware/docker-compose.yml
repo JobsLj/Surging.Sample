@@ -38,7 +38,7 @@ services:
     volumes:
       - D:\mysql\data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "13306:3306"
     networks:
       - surging_demo_service_net
 networks:
