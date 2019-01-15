@@ -25,21 +25,17 @@
       }
     ]
   },
-  "dbSetting": {
-    "dbType": "Oracle", //Mysql SqlServer, Oracle,
-    "connectionString": "Data Source=192.168.0.100:1521/orcl;User Id=foc3;Password=sunwin;"
-  },
   "Automapper": {
     "Assemblies": "SunWin.IfocService.*.IApplication;SunWin.IfocService.*.Domain"
   },
   "Swagger": {
     "Version": "${SwaggerVersion}|v1",
-    "Title": "${SwaggerTitle}|SunWin.IfocService.IdentityHost",
-    "Description": "${SwaggerDes}|身份认证与授权服务",
+    "Title": "${SwaggerTitle}|微服务组件",
+    "Description": "${SwaggerDes}|微服务组件描述",
     "Contact": {
-      "Name": "API Support",
-      "Url": "https://gitee.com/GFCM/SunWin.Ifoc.Service",
-      "Email": "liuhongliang@wintelia.com"
+      "Name": "Liuhongliang",
+      "Url": "https://github.com/liuhll/Surging.Sample",
+      "Email": "1029765111@qq.com"
     },
     "Authorization": {
       "EnableAuthorization": true,

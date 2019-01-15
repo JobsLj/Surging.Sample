@@ -7,7 +7,7 @@ namespace Surging.Core.Nlog
 {
     public class NLogModule : EnginePartModule
     {
-        private string nlogConfigFile = "${LogPath}|NLog.config";
+        private string nlogConfigFile = "${LogConfigPath}|NLog.config";
 
         public override void Initialize(CPlatformContainer serviceProvider)
         {

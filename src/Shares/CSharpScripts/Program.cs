@@ -27,7 +27,7 @@ namespace Hl.ServiceHost
                            .AddRelateServiceRuntime()
                            .AddConfigurationWatch()
                            .AddServiceEngine(typeof(SurgingServiceEngine));
-                          //.AddDapperRepository();
+
                           builder.Register(p => new CPlatformContainer(ServiceLocator.Current));
                       });
                  })
@@ -40,14 +40,28 @@ namespace Hl.ServiceHost
                  .UseConsoleLifetime()
                  .Configure(build =>
                  {
-                     build.AddCacheFile("${cachepath}|Configs/cacheSettings.json", optional: false, reloadOnChange: true);
-                     build.AddCPlatformFile("${srcppath}|Configs/srcpSettings.json", optional: false, reloadOnChange: true);
-                     build.AddEventBusFile("Configs/eventBusSettings.json", optional: false);
-                     build.AddConsulFile("Configs/consul.json", optional: false, reloadOnChange: true);
+#if DEBUG
+                     build.AddCacheFile("${cachePath}|/app/configs/cacheSettings.json", optional: false, reloadOnChange: true);
+                     build.AddCPlatformFile("${surgingPath}|/app/configs/surgingSettings.json", optional: false, reloadOnChange: true);                   
+                     build.AddEventBusFile("${eventBusPath}|/app/configs/eventBusSettings.json", optional: false);
+                     build.AddConsulFile("${consulPath}|/app/configs/consul.json", optional: false, reloadOnChange: true);
+
+
+#else
+                    build.AddCacheFile("${cachePath}|configs/cacheSettings.json", optional: false, reloadOnChange: true);                      
+                    build.AddCPlatformFile("${surgingPath}|configs/surgingSettings.json", optional: false,reloadOnChange: true);                    
+                    build.AddEventBusFile("configs/eventBusSettings.json", optional: false);
+                    build.AddConsulFile("configs/consul.json", optional: false, reloadOnChange: true);
+#endif
                  })
                  .UseProxy()
                  .UseStartup<Startup>()
                  .Build();
+
+            using (host.Run())
+            {
+                Console.WriteLine($"服务端启动成功，{DateTime.Now}。");
+            }
         }
     }
 }

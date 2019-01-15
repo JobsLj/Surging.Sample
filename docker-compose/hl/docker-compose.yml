@@ -65,7 +65,7 @@ services:
     image: hlservice/stock:${TAG:-latest}
     build:
       context: ../..
-      dockerfile: src/Servers/Stock/Hl.Schedule.ServerHost/Dockerfile
+      dockerfile: src/Servers/Stock/Hl.Stock.ServerHost/Dockerfile
       args:
         host_workdir: src/Servers/Stock/Hl.Stock.ServerHost
         host_name: Hl.Stock.ServerHost.dll
@@ -100,4 +100,4 @@ services:
 networks:
   src_srcp_demo_service_net: 
     external:
-      name: docker-compose_surging_demo_service_net
+      name: middleware_surging_demo_service_net

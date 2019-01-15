@@ -1,4 +1,5 @@
 <Project>
+  <Import Project=".\common.props" />
   <ItemGroup>
     <PackageReference Include="Surging.Core.Caching" Version="0.5.0-bate.1" />
     <PackageReference Include="Surging.Core.CPlatform" Version="0.5.0-bate.1" />

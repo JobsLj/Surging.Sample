@@ -1,0 +1,50 @@
+version: '3.4'
+
+services: 
+  hlservice.customer:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.identity:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.order:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.product:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.schedule:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.stock:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.systemmanager:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs
+
+  hlservice.wsserver:
+    environment:
+      LogConfigPath: /app/configs/NLog.config
+    volumes:
+      - ../../src/Shares/Configs:/app/configs

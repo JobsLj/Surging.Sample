@@ -3,7 +3,6 @@ version: '3.4'
 services:
   hlservice.customer:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${NORMAL_SERVER_ENGINE}
@@ -15,12 +14,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1100:100"
-      - "8080:8080"
+      - "18080:8080"
 
   hlservice.identity:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${NORMAL_SERVER_ENGINE}
@@ -32,12 +29,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1101:100"
-      - "8081:8080"
+      - "18081:8080"
 
   hlservice.order:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${NORMAL_SERVER_ENGINE}
@@ -49,12 +44,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1102:100"
-      - "8082:8080"
+      - "18082:8080"
 
   hlservice.product:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${NORMAL_SERVER_ENGINE}
@@ -66,12 +59,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1103:100"
-      - "8083:8080"
+      - "18083:8080"
 
   hlservice.schedule:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${SCHEDULE_SERVER_ENGINE}
@@ -83,12 +74,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1104:100"
-      - "8084:8080"
+      - "18084:8080"
 
   hlservice.stock:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${NORMAL_SERVER_ENGINE}
@@ -100,12 +89,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1105:100"
-      - "8085:8080"
+      - "18085:8080"
 
   hlservice.systemmanager:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${NORMAL_SERVER_ENGINE}
@@ -117,12 +104,10 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1106:100"
-      - "8086:8080"
+      - "18086:8080"
 
   hlservice.wsserver:
     environment:
-      Surging_Server_Address: 0.0.0.0
       Register_Conn: ${REGISTER_CONN:-consul:8500}
       Register_SessionTimeout: ${REGISTER_SESSION_TIMEOUT:-50}
       UseEngineParts: ${WS_SERVER_ENGINE}
@@ -134,5 +119,4 @@ services:
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
-      - "1107:100"
       - "196:96"

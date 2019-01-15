@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\..\Shares\Props\common.props" />
-  <Import Project="..\..\..\Shares\Props\hostpackage.props" />
+  <Import Project="..\..\..\Shares\Props\schedule.hostpackage.props" />
   <ItemGroup>
     <ProjectReference Include="..\Hl.Schedule.Application\Hl.Schedule.Application.csproj" />
   </ItemGroup>
