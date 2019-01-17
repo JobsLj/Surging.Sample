@@ -10,7 +10,8 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
-      SwaggerDes: "客户管理微服务组件"
+      SwaggerTitle: "客户管理微服务组件"
+      SwaggerDes: "客户信息管理服务"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
     ports:
@@ -25,6 +26,7 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
+      SwaggerTitle: "身份认证微服务组件"
       SwaggerDes: "微服务集群身份认证与授权组件"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
@@ -40,6 +42,7 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
+      SwaggerTitle: "订单微服务"
       SwaggerDes: "订单微服务组件"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
@@ -55,6 +58,7 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
+      SwaggerTitle: "产品管理"
       SwaggerDes: "产品管理微服务组件"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
@@ -70,6 +74,7 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
+      SwaggerTitle: "分布式任务调度组件"
       SwaggerDes: "任务调度微服务组件"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
@@ -85,6 +90,7 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
+      SwaggerTitle: "库存管理"
       SwaggerDes: "库存管理微服务组件"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
@@ -100,6 +106,7 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
+      SwaggerTitle: "系统管理"
       SwaggerDes: "系统管理微服务组件"
       SupportName: "LiuHongliang"
       SupportEmail: 1029765111@qq.com
@@ -115,8 +122,5 @@ services:
       EventBusUserName:  ${RABBITMQ_USERNAME:-rabbitmq}
       EventBusPassword:  ${RABBITMQ_PASSWORD:-rabbitmq}
       EventBusPort: ${RABBITMQ_PORT:-5672}
-      SwaggerDes: "ws服务组件"
-      SupportName: "LiuHongliang"
-      SupportEmail: 1029765111@qq.com
     ports:
       - "196:96"
