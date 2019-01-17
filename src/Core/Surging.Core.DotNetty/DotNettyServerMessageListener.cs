@@ -62,42 +62,41 @@ namespace Surging.Core.DotNetty
             if (_logger.IsEnabled(LogLevel.Debug))
                 _logger.LogDebug($"准备启动服务主机，监听地址：{endPoint}。");
 
+            IEventLoopGroup bossGroup = new MultithreadEventLoopGroup(1);
+            IEventLoopGroup workerGroup = new MultithreadEventLoopGroup();//Default eventLoopCount is Environment.ProcessorCount * 2
+            var bootstrap = new ServerBootstrap();
+
+            if (AppConfig.ServerOptions.Libuv)
+            {
+                var dispatcher = new DispatcherEventLoopGroup();
+                bossGroup = dispatcher;
+                workerGroup = new WorkerEventLoopGroup(dispatcher);
+                bootstrap.Channel<TcpServerChannel>();
+            }
+            else
+            {
+                bossGroup = new MultithreadEventLoopGroup(1);
+                workerGroup = new MultithreadEventLoopGroup();
+                bootstrap.Channel<TcpServerSocketChannel>();
+            }
+            bootstrap
+            .Option(ChannelOption.SoBacklog, AppConfig.ServerOptions.SoBacklog)
+            .ChildOption(ChannelOption.Allocator, PooledByteBufferAllocator.Default)
+            .Group(bossGroup, workerGroup)
+            .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
+            {
+                var pipeline = channel.Pipeline;
+                pipeline.AddLast(new LengthFieldPrepender(4));
+                pipeline.AddLast(new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
+                pipeline.AddLast(new TransportMessageChannelHandlerAdapter(_transportMessageDecoder));
+                pipeline.AddLast(new ServerHandler(async (contenxt, message) =>
+                {
+                    var sender = new DotNettyServerMessageSender(_transportMessageEncoder, contenxt);
+                    await OnReceived(sender, message);
+                }, _logger));
+            }));
             try
             {
-                IEventLoopGroup bossGroup = new MultithreadEventLoopGroup(1);
-                IEventLoopGroup workerGroup = new MultithreadEventLoopGroup();//Default eventLoopCount is Environment.ProcessorCount * 2
-                var bootstrap = new ServerBootstrap();
-
-                if (AppConfig.ServerOptions.Libuv)
-                {
-                    var dispatcher = new DispatcherEventLoopGroup();
-                    bossGroup = dispatcher;
-                    workerGroup = new WorkerEventLoopGroup(dispatcher);
-                    bootstrap.Channel<TcpServerChannel>();
-                }
-                else
-                {
-                    bossGroup = new MultithreadEventLoopGroup(1);
-                    workerGroup = new MultithreadEventLoopGroup();
-                    bootstrap.Channel<TcpServerSocketChannel>();
-                }
-                bootstrap
-                .Option(ChannelOption.SoBacklog, 100)
-                .ChildOption(ChannelOption.Allocator, PooledByteBufferAllocator.Default)
-                .Group(bossGroup, workerGroup)
-                .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
-                {
-                    var pipeline = channel.Pipeline;
-                    pipeline.AddLast(new LengthFieldPrepender(4));
-                    pipeline.AddLast(new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
-                    pipeline.AddLast(new TransportMessageChannelHandlerAdapter(_transportMessageDecoder));
-                    pipeline.AddLast(new ServerHandler(async (contenxt, message) =>
-                    {
-                        var sender = new DotNettyServerMessageSender(_transportMessageEncoder, contenxt);
-                        await OnReceived(sender, message);
-                    }, _logger));
-                }));
-
                 _channel = await bootstrap.BindAsync(endPoint);
                 if (_logger.IsEnabled(LogLevel.Debug))
                     _logger.LogDebug($"服务主机启动成功，监听地址：{endPoint}。");
@@ -106,37 +105,6 @@ namespace Surging.Core.DotNetty
             {
                 _logger.LogError($"服务主机启动失败，监听地址：{endPoint}。 ");
             }
-
-            //var bossGroup = new MultithreadEventLoopGroup(1);
-            //var workerGroup = new MultithreadEventLoopGroup();//Default eventLoopCount is Environment.ProcessorCount * 2
-            //var bootstrap = new ServerBootstrap();
-            //bootstrap
-            //.Group(bossGroup, workerGroup)
-            //.Channel<TcpServerSocketChannel>()
-            //.Option(ChannelOption.SoBacklog, 100)
-            //.ChildOption(ChannelOption.Allocator, PooledByteBufferAllocator.Default)
-            //.ChildHandler(new ActionChannelInitializer<ISocketChannel>(channel =>
-            //{
-            //    var pipeline = channel.Pipeline;
-            //    pipeline.AddLast(new LengthFieldPrepender(4));
-            //    pipeline.AddLast(new LengthFieldBasedFrameDecoder(int.MaxValue, 0, 4, 0, 4));
-            //    pipeline.AddLast(new TransportMessageChannelHandlerAdapter(_transportMessageDecoder));
-            //    pipeline.AddLast(new ServerHandler(async (contenxt, message) =>
-            //    {
-            //        var sender = new DotNettyServerMessageSender(_transportMessageEncoder, contenxt);
-            //        await OnReceived(sender, message);
-            //    }, _logger));
-            //}));
-            //try
-            //{
-            //    _channel = await bootstrap.BindAsync(endPoint);
-            //    if (_logger.IsEnabled(LogLevel.Debug))
-            //        _logger.LogDebug($"服务主机启动成功，监听地址：{endPoint}。");
-            //}
-            //catch
-            //{
-            //    _logger.LogError($"服务主机启动失败，监听地址：{endPoint}。 ");
-            //}
         }
 
         public void CloseAsync()

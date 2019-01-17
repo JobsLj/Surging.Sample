@@ -25,20 +25,19 @@ namespace Surging.Core.CPlatform.Runtime.Client.Address.Resolvers.Implementation
         private readonly ILogger<DefaultAddressResolver> _logger;
         private readonly IHealthCheckService _healthCheckService;
         private readonly CPlatformContainer _container;
-
-        private readonly ConcurrentDictionary<string, IAddressSelector> _addressSelectors = new
-            ConcurrentDictionary<string, IAddressSelector>();
+        private readonly ConcurrentDictionary<string, IAddressSelector> _addressSelectors = new ConcurrentDictionary<string, IAddressSelector>();
 
         private readonly IServiceCommandProvider _commandProvider;
+        private readonly ConcurrentDictionary<string, ServiceRoute> _concurrent = new ConcurrentDictionary<string, ServiceRoute>();
 
-        private readonly ConcurrentDictionary<string, ServiceRoute> _concurrent =
-  new ConcurrentDictionary<string, ServiceRoute>();
-
+        private readonly IServiceHeartbeatManager _serviceHeartbeatManager;
         #endregion Field
 
         #region Constructor
 
-        public DefaultAddressResolver(IServiceCommandProvider commandProvider, IServiceRouteManager serviceRouteManager, ILogger<DefaultAddressResolver> logger, CPlatformContainer container, IHealthCheckService healthCheckService)
+        public DefaultAddressResolver(IServiceCommandProvider commandProvider, IServiceRouteManager serviceRouteManager, ILogger<DefaultAddressResolver> logger, CPlatformContainer container,
+            IHealthCheckService healthCheckService,
+            IServiceHeartbeatManager serviceHeartbeatManager)
         {
             _container = container;
             _serviceRouteManager = serviceRouteManager;
@@ -46,6 +45,7 @@ namespace Surging.Core.CPlatform.Runtime.Client.Address.Resolvers.Implementation
             LoadAddressSelectors();
             _commandProvider = commandProvider;
             _healthCheckService = healthCheckService;
+            _serviceHeartbeatManager = serviceHeartbeatManager;
             serviceRouteManager.Changed += ServiceRouteManager_Removed;
             serviceRouteManager.Removed += ServiceRouteManager_Removed;
             serviceRouteManager.Created += ServiceRouteManager_Add;
@@ -60,7 +60,7 @@ namespace Surging.Core.CPlatform.Runtime.Client.Address.Resolvers.Implementation
         /// </summary>
         /// <param name="serviceId">服务Id。</param>
         /// <returns>服务地址模型。</returns>
-        public async ValueTask<AddressModel> Resolver(string serviceId, int hashCode)
+        public async ValueTask<AddressModel> Resolver(string serviceId, string item)
         {
             if (_logger.IsEnabled(LogLevel.Debug))
                 _logger.LogDebug($"准备为服务id：{serviceId}，解析可用地址。");
@@ -73,6 +73,7 @@ namespace Surging.Core.CPlatform.Runtime.Client.Address.Resolvers.Implementation
                 if (descriptor != null)
                 {
                     _concurrent.GetOrAdd(serviceId, descriptor);
+                    _serviceHeartbeatManager.AddWhitelist(serviceId);
                 }
                 else
                 {
@@ -106,11 +107,12 @@ namespace Surging.Core.CPlatform.Runtime.Client.Address.Resolvers.Implementation
                 _logger.LogInformation($"根据服务id：{serviceId}，找到以下可用地址：{string.Join(",", address.Select(i => i.ToString()))}。");
             var command = await _commandProvider.GetCommand(serviceId);
             var addressSelector = _addressSelectors[command.ShuntStrategy.ToString()];
+
             return await addressSelector.SelectAsync(new AddressSelectContext
             {
                 Descriptor = descriptor.ServiceDescriptor,
                 Address = address,
-                HashCode = hashCode
+                Item = item
             });
         }
 

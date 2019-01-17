@@ -11,11 +11,10 @@ namespace Surging.Core.Caching.HealthChecks.Implementation
     public class DefaultHealthCheckService : IHealthCheckService, IDisposable
     {
         private readonly Timer _timer;
-
         private readonly ConcurrentDictionary<ValueTuple<string, int>, MonitorEntry> _dictionary =
     new ConcurrentDictionary<ValueTuple<string, int>, MonitorEntry>();
-
         private readonly IServiceCacheManager _serviceCacheManager;
+
 
         public DefaultHealthCheckService(IServiceCacheManager serviceCacheManager)
         {
@@ -111,18 +110,21 @@ namespace Surging.Core.Caching.HealthChecks.Implementation
             }
         }
 
+
         private void RemoveUnhealthyAddress(IEnumerable<MonitorEntry> monitorEntry)
         {
             if (monitorEntry.Any())
             {
                 var addresses = monitorEntry.Select(p => p.EndPoint).ToList();
                 _serviceCacheManager.RemveAddressAsync(addresses).Wait();
-                addresses.ForEach(p =>
-                {
+                addresses.ForEach(p => {
+
                     _dictionary.TryRemove(new ValueTuple<string, int>(p.Host, p.Port), out MonitorEntry value);
                 });
+
             }
         }
+
 
         #region Help Class
 

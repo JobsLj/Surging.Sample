@@ -1,6 +1,6 @@
 ﻿{
   "Surging": {
-    "Address": "${Surging_Server_Address}|0.0.0.0",
+    "Ip": "${Surging_Server_Ip}|0.0.0.0",
     "WatchInterval": 30,
     "Port": "${Surging_Server_Port}|100",
     "MappingIp": "${Mapping_Ip}",

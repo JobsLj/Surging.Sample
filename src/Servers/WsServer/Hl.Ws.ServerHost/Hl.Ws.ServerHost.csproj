@@ -2,7 +2,7 @@
 
   <Import Project="..\..\..\Shares\Props\hostpackage.props" />
   <ItemGroup>
-    <PackageReference Include="Surging.Core.Protocol.WS" Version="0.5.0-bate.2" />
+    <PackageReference Include="Surging.Core.Protocol.WS" Version="0.5.0-bate.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hl.Ws.Application\Hl.Ws.Application.csproj" />

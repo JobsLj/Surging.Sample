@@ -42,7 +42,7 @@ namespace Surging.Core.CPlatform
                 mapper.Resolve<IServiceCommandManager>().SetServiceCommandsAsync();
                 var serviceToken = mapper.Resolve<IServiceTokenGenerator>().GeneratorToken(token);
                 var _port = AppConfig.ServerOptions.Port == 0 ? port : AppConfig.ServerOptions.Port;
-                var _address = AppConfig.ServerOptions.Address ?? address;
+                var _address = AppConfig.ServerOptions.Ip ?? address;
                 var _ip = AddressHelper.GetIpFromAddress(_address);
 
                 _port = AppConfig.ServerOptions.IpEndpoint?.Port ?? _port;
@@ -97,7 +97,7 @@ namespace Surging.Core.CPlatform
             var serverOptions = new SurgingServerOptions();
             options.Invoke(serverOptions);
             AppConfig.ServerOptions = serverOptions;
-            return hostBuilder.UseServer(serverOptions.Address, serverOptions.Port, serverOptions.Token);
+            return hostBuilder.UseServer(serverOptions.Ip, serverOptions.Port, serverOptions.Token);
         }
 
         public static IServiceHostBuilder UseClient(this IServiceHostBuilder hostBuilder)

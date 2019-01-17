@@ -50,7 +50,7 @@ namespace Surging.Core.KestrelHttpServer
             parameters.Remove("servicekey", out object serviceKey);
             var serviceRouteProvider = ServiceLocator.GetService<IServiceRouteProvider>();
             var commandInfo = await serviceRouteProvider.GetRouteByPath(routePath);
-            var authorizationServerProvider = ServiceLocator.GetService<IAuthorizationServerProvider>();
+
 
             if (context.Request.HasFormContentType)
             {
@@ -72,6 +72,7 @@ namespace Surging.Core.KestrelHttpServer
                     var bodyParmeters = _serializer.Deserialize<string, IDictionary<string, object>>(data) ?? new Dictionary<string, object>();
                     if (AppConfig.SwaggerOptions.Authorization.EnableAuthorization && commandInfo.ServiceDescriptor.EnableAuthorization())
                     {
+                        var authorizationServerProvider = ServiceLocator.GetService<IAuthorizationServerProvider>();
                         var payload = JsonConvert.DeserializeObject(await authorizationServerProvider.GetPayloadString(context.Request.GetTokenFromHeader()));
                         bodyParmeters.Add("payload", payload);
                     }
@@ -86,6 +87,7 @@ namespace Surging.Core.KestrelHttpServer
                 {
                     if (AppConfig.SwaggerOptions.Authorization.EnableAuthorization && commandInfo.ServiceDescriptor.EnableAuthorization())
                     {
+                        var authorizationServerProvider = ServiceLocator.GetService<IAuthorizationServerProvider>();
                         var payload = JsonConvert.DeserializeObject(await authorizationServerProvider.GetPayloadString(context.Request.GetTokenFromHeader()));
                         parameters.Add("payload", payload);
                     }

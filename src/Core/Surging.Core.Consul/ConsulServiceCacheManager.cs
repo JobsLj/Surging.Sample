@@ -45,6 +45,7 @@ namespace Surging.Core.Consul
 
         public override async Task ClearAsync()
         {
+
             var queryResult = await _consul.KV.List(_configInfo.CachePath);
 
             var response = queryResult.Response;
@@ -113,6 +114,7 @@ namespace Surging.Core.Consul
 
         private async Task<ServiceCache[]> GetCaches(IEnumerable<string> childrens)
         {
+
             childrens = childrens.ToArray();
             var caches = new List<ServiceCache>(childrens.Count());
 
@@ -132,7 +134,7 @@ namespace Surging.Core.Consul
         {
             ServiceCache result = null;
             var watcher = new NodeMonitorWatcher(_consul, _manager, path,
-                 async (oldData, newData) => await NodeChange(oldData, newData));
+                 async (oldData, newData) => await NodeChange(oldData, newData), null);
             var queryResult = await _consul.KV.Keys(path);
             if (queryResult.Response != null)
             {
@@ -274,8 +276,10 @@ namespace Surging.Core.Consul
             if (newCache == null)
                 //触发删除事件。
                 OnRemoved(new ServiceCacheEventArgs(oldCache));
+
             else if (oldCache == null)
                 OnCreated(new ServiceCacheEventArgs(newCache));
+
             else
                 //触发缓存变更事件。
                 OnChanged(new ServiceCacheChangedEventArgs(newCache, oldCache));
@@ -324,6 +328,6 @@ namespace Surging.Core.Consul
                 _logger.LogInformation("缓存数据更新成功。");
         }
 
-        #endregion 私有方法
+        #endregion
     }
 }

@@ -13,16 +13,14 @@ namespace Surging.Core.Caching.AddressResolvers.Implementation
 {
     public class DefaultAddressResolver : IAddressResolver
     {
-        #region Field
 
+        #region Field  
         private readonly ILogger<DefaultAddressResolver> _logger;
         private readonly IHealthCheckService _healthCheckService;
         private readonly IServiceCacheManager _serviceCacheManager;
-
         private readonly ConcurrentDictionary<string, ServiceCache> _concurrent =
 new ConcurrentDictionary<string, ServiceCache>();
-
-        #endregion Field
+        #endregion
 
         public DefaultAddressResolver(IHealthCheckService healthCheckService, ILogger<DefaultAddressResolver> logger, IServiceCacheManager serviceCacheManager)
         {
@@ -36,6 +34,7 @@ new ConcurrentDictionary<string, ServiceCache>();
 
         public async ValueTask<ConsistentHashNode> Resolver(string cacheId, string item)
         {
+
             _concurrent.TryGetValue(cacheId, out ServiceCache descriptor);
             if (descriptor == null)
             {
@@ -81,6 +80,7 @@ new ConcurrentDictionary<string, ServiceCache>();
             return hash != null ? hash.GetItemNode(item) : default(ConsistentHashNode);
         }
 
+
         private static string GetKey(CacheDescriptor descriptor)
         {
             return descriptor.Id;
@@ -99,9 +99,11 @@ new ConcurrentDictionary<string, ServiceCache>();
                 if (hash != null)
                     foreach (var node in e.Cache.CacheEndpoint)
                     {
+
                         var hashNode = node as ConsistentHashNode;
-                        hash.Remove(hashNode);
-                        hash.Add(hashNode);
+                        var addr = string.Format("{0}:{1}", hashNode.Host, hashNode.Port);
+                        hash.Remove(addr);
+                        hash.Add(hashNode, addr);
                     }
             }
         }
@@ -119,8 +121,9 @@ new ConcurrentDictionary<string, ServiceCache>();
                     foreach (var node in e.Cache.CacheEndpoint)
                     {
                         var hashNode = node as ConsistentHashNode;
-                        hash.Remove(hashNode);
-                        hash.Add(hashNode);
+                        var addr = string.Format("{0}:{1}", hashNode.Host, hashNode.Port);
+                        hash.Remove(addr);
+                        hash.Add(hashNode, addr);
                     }
             }
         }

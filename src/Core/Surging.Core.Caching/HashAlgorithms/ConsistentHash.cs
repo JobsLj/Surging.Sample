@@ -15,13 +15,11 @@ namespace Surging.Core.Caching.HashAlgorithms
     public class ConsistentHash<T>
     {
         #region 字段
-
         private readonly SortedDictionary<int, T> _ring = new SortedDictionary<int, T>();
         private int[] _nodeKeysInRing = null;
         private readonly IHashAlgorithm _hashAlgorithm;
         private readonly int _virtualNodeReplicationFactor = 1000;
-
-        #endregion 字段
+        #endregion
 
         public ConsistentHash(IHashAlgorithm hashAlgorithm)
         {
@@ -35,61 +33,36 @@ namespace Surging.Core.Caching.HashAlgorithms
         }
 
         #region 属性
-
         /// <summary>
         /// 复制哈希节点数
         /// </summary>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
         public int VirtualNodeReplicationFactor
         {
             get { return _virtualNodeReplicationFactor; }
         }
+        #endregion
 
-        #endregion 属性
-
-        /// <summary>
-        /// 初始化节点服务器
-        /// </summary>
-        /// <param name="nodes">节点</param>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
-        public void Initialize(IEnumerable<T> nodes)
-        {
-            foreach (var node in nodes)
-            {
-                AddNode(node);
-            }
-            _nodeKeysInRing = _ring.Keys.ToArray();
-        }
 
         /// <summary>
         /// 添加节点
         /// </summary>
         /// <param name="node">节点</param>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
-        public void Add(T node)
+        public void Add(T node, string value)
         {
-            AddNode(node);
+            AddNode(node, value);
             _nodeKeysInRing = _ring.Keys.ToArray();
+        }
+
+        public IEnumerable<T> GetNodes()
+        {
+            return _ring.Values.Distinct().ToList();
         }
 
         /// <summary>
         /// 删除节点
         /// </summary>
         /// <param name="node">节点</param>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
-        public void Remove(T node)
+        public void Remove(string node)
         {
             RemoveNode(node);
             _nodeKeysInRing = _ring.Keys.ToArray();
@@ -100,10 +73,6 @@ namespace Surging.Core.Caching.HashAlgorithms
         /// </summary>
         /// <param name="item">值</param>
         /// <returns>返回节点</returns>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
         public T GetItemNode(string item)
         {
             var hashOfItem = _hashAlgorithm.Hash(item);
@@ -111,24 +80,15 @@ namespace Surging.Core.Caching.HashAlgorithms
             return _ring[_nodeKeysInRing[nearestNodePosition]];
         }
 
-        public IEnumerable<T> GetNodes()
-        {
-            return _ring.Values.Distinct().ToList();
-        }
-
         /// <summary>
         /// 添加节点
         /// </summary>
         /// <param name="node">节点</param>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
-        private void AddNode(T node)
+        private void AddNode(T node, string value)
         {
             for (var i = 0; i < _virtualNodeReplicationFactor; i++)
             {
-                var hashOfVirtualNode = _hashAlgorithm.Hash(node.GetHashCode().ToString(CultureInfo.InvariantCulture) + i);
+                var hashOfVirtualNode = _hashAlgorithm.Hash(value.ToString(CultureInfo.InvariantCulture) + i);
                 _ring[hashOfVirtualNode] = node;
             }
         }
@@ -137,19 +97,15 @@ namespace Surging.Core.Caching.HashAlgorithms
         /// 删除节点
         /// </summary>
         /// <param name="node">节点</param>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
-        private void RemoveNode(T node)
+        private void RemoveNode(string value)
         {
             for (var i = 0; i < _virtualNodeReplicationFactor; i++)
             {
-                var hashOfVirtualNode = _hashAlgorithm.Hash(node.GetHashCode().ToString() + i);
-                if (_ring.ContainsKey(hashOfVirtualNode))
-                    _ring.Remove(hashOfVirtualNode);
+                var hashOfVirtualNode = _hashAlgorithm.Hash(value.ToString() + i);
+                _ring.Remove(hashOfVirtualNode);
             }
         }
+
 
         /// <summary>
         /// 顺时针查找对应哈希的位置
@@ -157,10 +113,6 @@ namespace Surging.Core.Caching.HashAlgorithms
         /// <param name="keys">键集合数</param>
         /// <param name="hashOfItem">哈希值</param>
         /// <returns>返回哈希的位置</returns>
-        /// <remarks>
-        /// 	<para>创建：范亮</para>
-        /// 	<para>日期：2016/4/2</para>
-        /// </remarks>
         private int GetClockwiseNearestNode(int[] keys, int hashOfItem)
         {
             var begin = 0;

@@ -1,17 +1,17 @@
 <Project>
   <Import Project=".\common.props" />
   <ItemGroup>
-    <PackageReference Include="Surging.Core.Caching" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.Consul" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.CPlatform" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.DotNetty" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.Nlog" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.ProxyGenerator" Version="0.5.0-bate.2" />
-    <PackageReference Include="Surging.Core.Swagger" Version="0.5.0-bate.2" />
-	<PackageReference Include="Surging.Core.Schedule" Version="0.5.0-bate.2" />
+    <PackageReference Include="Surging.Core.Caching" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.Codec.MessagePack" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.Consul" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.CPlatform" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.DotNetty" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.EventBusRabbitMQ" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.KestrelHttpServer" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.Nlog" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.ProxyGenerator" Version="0.5.0-bate.3" />
+    <PackageReference Include="Surging.Core.Swagger" Version="0.5.0-bate.3" />
+	<PackageReference Include="Surging.Core.Schedule" Version="0.5.0-bate.3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Shares\CSharpScripts\ScheduleProgram.cs" Link="Program.cs" />

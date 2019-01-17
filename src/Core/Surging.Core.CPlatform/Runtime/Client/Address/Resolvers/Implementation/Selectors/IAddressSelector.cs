@@ -19,6 +19,8 @@ namespace Surging.Core.CPlatform.Runtime.Client.Address.Resolvers.Implementation
         /// </summary>
         public int HashCode { get; set; }
 
+        public string Item { get; set; }
+
         /// <summary>
         /// 服务可用地址。
         /// </summary>

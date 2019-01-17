@@ -26,13 +26,14 @@ namespace Surging.Core.Consul
         public static IServiceBuilder UseConsulRouteManager(this IServiceBuilder builder, ConfigInfo configInfo)
         {
             return builder.UseRouteManager(provider =>
-             new ConsulServiceRouteManager(
-                 GetConfigInfo(configInfo),
-              provider.GetRequiredService<ISerializer<byte[]>>(),
-                provider.GetRequiredService<ISerializer<string>>(),
-                provider.GetRequiredService<IClientWatchManager>(),
-                provider.GetRequiredService<IServiceRouteFactory>(),
-                provider.GetRequiredService<ILogger<ConsulServiceRouteManager>>()));
+                new ConsulServiceRouteManager(
+                    GetConfigInfo(configInfo),
+                    provider.GetRequiredService<ISerializer<byte[]>>(),
+                    provider.GetRequiredService<ISerializer<string>>(),
+                    provider.GetRequiredService<IClientWatchManager>(),
+                    provider.GetRequiredService<IServiceRouteFactory>(),
+                    provider.GetRequiredService<ILogger<ConsulServiceRouteManager>>(),
+                    provider.GetRequiredService<IServiceHeartbeatManager>()));
         }
 
         public static IServiceBuilder UseConsulCacheManager(this IServiceBuilder builder, ConfigInfo configInfo)
@@ -58,13 +59,14 @@ namespace Surging.Core.Consul
             return builder.UseCommandManager(provider =>
             {
                 var result = new ConsulServiceCommandManager(
-                     GetConfigInfo(configInfo),
-                  provider.GetRequiredService<ISerializer<byte[]>>(),
+                    GetConfigInfo(configInfo),
+                    provider.GetRequiredService<ISerializer<byte[]>>(),
                     provider.GetRequiredService<ISerializer<string>>(),
                     provider.GetRequiredService<IServiceRouteManager>(),
                     provider.GetRequiredService<IClientWatchManager>(),
                     provider.GetRequiredService<IServiceEntryManager>(),
-                    provider.GetRequiredService<ILogger<ConsulServiceCommandManager>>());
+                    provider.GetRequiredService<ILogger<ConsulServiceCommandManager>>(),
+                    provider.GetRequiredService<IServiceHeartbeatManager>());
                 return result;
             });
         }
@@ -152,7 +154,7 @@ namespace Surging.Core.Consul
                     option.SubscriberPath ?? config.SubscriberPath,
                     option.CommandPath ?? config.CommandPath,
                     option.CachePath ?? config.CachePath,
-                   option.ReloadOnChange != null ? bool.Parse(option.ReloadOnChange) :
+                    option.ReloadOnChange != null ? bool.Parse(option.ReloadOnChange) :
                     config.ReloadOnChange,
                     option.EnableChildrenMonitor != null ? bool.Parse(option.EnableChildrenMonitor) :
                     config.EnableChildrenMonitor

@@ -41,8 +41,8 @@ namespace Surging.Core.KestrelHttpServer
 
             builder.RegisterType(typeof(DefaultServiceSchemaProvider)).As(typeof(IServiceSchemaProvider)).SingleInstance();
 
-            builder.RegisterType(typeof(HttpExecutor)).As(typeof(IServiceExecutor))
-  .Named<IServiceExecutor>(CommunicationProtocol.Http.ToString()).SingleInstance();
+            builder.RegisterType(typeof(HttpExecutor)).As(typeof(IServiceExecutor)).Named<IServiceExecutor>(CommunicationProtocol.Http.ToString()).SingleInstance();
+
             if (CPlatform.AppConfig.ServerOptions.Protocol == CommunicationProtocol.Http)
             {
                 RegisterDefaultProtocol(builder);
@@ -51,6 +51,7 @@ namespace Surging.Core.KestrelHttpServer
             {
                 RegisterHttpProtocol(builder);
             }
+
         }
 
         private static void RegisterDefaultProtocol(ContainerBuilderWrapper builder)
@@ -83,7 +84,7 @@ namespace Surging.Core.KestrelHttpServer
                     provider.Resolve<ILogger<KestrelHttpMessageListener>>(),
                     provider.Resolve<ISerializer<string>>(),
                     provider.Resolve<IServiceSchemaProvider>()
-                      );
+                );
             }).SingleInstance();
             builder.Register(provider =>
             {

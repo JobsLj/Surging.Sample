@@ -13,10 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Surging.Core.CPlatform;
 
 namespace Surging.Core.Protocol.Http
 {
-    internal class DotNettyHttpServerMessageListener : IMessageListener, IDisposable
+    class DotNettyHttpServerMessageListener : IMessageListener, IDisposable
     {
         #region Field
 
@@ -69,10 +70,10 @@ namespace Surging.Core.Protocol.Http
             var bootstrap = new ServerBootstrap();
             bootstrap
             .Group(bossGroup, workerGroup)
-             .Channel<TcpServerSocketChannel>()
-                .Option(ChannelOption.SoReuseport, true)
+            .Channel<TcpServerSocketChannel>()
+            .Option(ChannelOption.SoReuseport, true)
             .ChildOption(ChannelOption.SoReuseaddr, true)
-             .Option(ChannelOption.SoBacklog, 8192)
+            .Option(ChannelOption.SoBacklog, AppConfig.ServerOptions.SoBacklog)
             .ChildHandler(new ActionChannelInitializer<IChannel>(channel =>
             {
                 IChannelPipeline pipeline = channel.Pipeline;
@@ -96,6 +97,7 @@ namespace Surging.Core.Protocol.Http
             {
                 _logger.LogError($"Http服务主机启动失败，监听地址：{endPoint}。 ");
             }
+
         }
 
         public void CloseAsync()
@@ -109,6 +111,7 @@ namespace Surging.Core.Protocol.Http
 
         #region Implementation of IDisposable
 
+
         public void Dispose()
         {
             Task.Run(async () =>
@@ -120,10 +123,9 @@ namespace Surging.Core.Protocol.Http
         #endregion Implementation of IDisposable
 
         #region Help Class
-
         private class ServerHandler : SimpleChannelInboundHandler<IFullHttpRequest>
         {
-            private readonly TaskCompletionSource completion = new TaskCompletionSource();
+            readonly TaskCompletionSource completion = new TaskCompletionSource();
 
             private readonly Action<IChannelHandlerContext, TransportMessage> _readAction;
             private readonly ILogger _logger;

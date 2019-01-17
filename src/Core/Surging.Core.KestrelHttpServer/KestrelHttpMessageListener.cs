@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Surging.Core.CPlatform.Serialization;
+using Surging.Core.CPlatform.Utilities;
 using Surging.Core.KestrelHttpServer.Internal;
 using Surging.Core.KestrelHttpServer.Middlewares;
 using Surging.Core.Swagger;
@@ -24,6 +25,7 @@ namespace Surging.Core.KestrelHttpServer
         private readonly ISerializer<string> _serializer;
         private readonly IServiceSchemaProvider _serviceSchemaProvider;
 
+
         public KestrelHttpMessageListener(ILogger<KestrelHttpMessageListener> logger,
             ISerializer<string> serializer,
             IServiceSchemaProvider serviceSchemaProvider) : base(logger, serializer)
@@ -31,6 +33,7 @@ namespace Surging.Core.KestrelHttpServer
             _logger = logger;
             _serializer = serializer;
             _serviceSchemaProvider = serviceSchemaProvider;
+
         }
 
         public async Task StartAsync(EndPoint endPoint)
@@ -69,7 +72,12 @@ namespace Surging.Core.KestrelHttpServer
                 services.AddSwaggerGen(options =>
                 {
                     options.SwaggerDoc(AppConfig.SwaggerOptions.Version, AppConfig.SwaggerOptions);
-                    var xmlPaths = _serviceSchemaProvider.GetSchemaFilesPath();
+                    var annotationXmlDir = string.Empty;
+                    if (!string.IsNullOrEmpty(AppConfig.SwaggerOptions.AnnotationXmlDir))
+                    {
+                        annotationXmlDir = EnvironmentHelper.GetEnvironmentVariable(AppConfig.SwaggerOptions.AnnotationXmlDir);
+                    }
+                    var xmlPaths = _serviceSchemaProvider.GetSchemaFilesPath(annotationXmlDir);
                     foreach (var xmlPath in xmlPaths)
                     {
                         options.IncludeXmlComments(xmlPath);

@@ -9,12 +9,14 @@ namespace Surging.Core.CPlatform.Configurations
         /// <summary>
         /// 微服务主机地址
         /// </summary>
-        public string Address { get; set; }
+        public string Ip { get; set; }
 
         /// <summary>
         /// 如果使用Docker容器,则表示宿主机映射的IP
         /// </summary>
         public string MappingIP { get; set; }
+
+        public string WanIp { get; set; }
 
         /// <summary>
         /// 如果使用Docker容器,则表示宿主机映射的端口号
@@ -47,6 +49,10 @@ namespace Surging.Core.CPlatform.Configurations
         /// </summary>
         public int Port { get; set; }
 
+        public int SoBacklog { get; set; } = 8192;
+
+        public bool EnableRouteWatch { get; set; }
+
         /// <summary>
         /// 通信协议端口
         /// </summary>
@@ -57,5 +63,9 @@ namespace Surging.Core.CPlatform.Configurations
         public string NotRelatedAssemblyFiles { get; set; }
 
         public string RelatedAssemblyFiles { get; set; } = "";
+
+        public RuntimeEnvironment Environment { get; set; } = RuntimeEnvironment.Production;
+
+        public bool ForceDisplayStackTrace { get; set; } = false;
     }
 }

@@ -7,8 +7,10 @@ using Surging.Core.Consul.WatcherProvider.Implementation;
 using Surging.Core.CPlatform.Address;
 using Surging.Core.CPlatform.Routing;
 using Surging.Core.CPlatform.Routing.Implementation;
+using Surging.Core.CPlatform.Runtime.Client;
 using Surging.Core.CPlatform.Serialization;
 using Surging.Core.CPlatform.Transport.Implementation;
+using Surging.Core.CPlatform.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +29,12 @@ namespace Surging.Core.Consul
         private readonly ISerializer<string> _stringSerializer;
         private readonly IClientWatchManager _manager;
         private ServiceRoute[] _routes;
-        private readonly bool _enableChildrenMonitor;
+        private readonly IServiceHeartbeatManager _serviceHeartbeatManager;
 
         public ConsulServiceRouteManager(ConfigInfo configInfo, ISerializer<byte[]> serializer,
        ISerializer<string> stringSerializer, IClientWatchManager manager, IServiceRouteFactory serviceRouteFactory,
-       ILogger<ConsulServiceRouteManager> logger) : base(stringSerializer)
+       ILogger<ConsulServiceRouteManager> logger,
+       IServiceHeartbeatManager serviceHeartbeatManager) : base(stringSerializer)
         {
             _configInfo = configInfo;
             _serializer = serializer;
@@ -39,6 +42,7 @@ namespace Surging.Core.Consul
             _serviceRouteFactory = serviceRouteFactory;
             _logger = logger;
             _manager = manager;
+            _serviceHeartbeatManager = serviceHeartbeatManager;
             _consul = new ConsulClient(config =>
             {
                 config.Address = new Uri($"http://{configInfo.Host}:{configInfo.Port}");
@@ -76,7 +80,7 @@ namespace Surging.Core.Consul
 
         public override async Task SetRoutesAsync(IEnumerable<ServiceRoute> routes)
         {
-            var hostAddr = RpcContext.GetContext().GetAttachment("Host") as AddressModel;
+            var hostAddr = NetUtils.GetHostAddress();
             var serviceRoutes = await GetRoutes(routes.Select(p => $"{ _configInfo.RoutePath}{p.ServiceDescriptor.Id}"));
             foreach (var route in routes)
             {
@@ -118,6 +122,7 @@ namespace Surging.Core.Consul
 
         protected override async Task SetRoutesAsync(IEnumerable<ServiceRouteDescriptor> routes)
         {
+
             foreach (var serviceRoute in routes)
             {
                 var nodeData = _serializer.Serialize(serviceRoute);
@@ -180,6 +185,7 @@ namespace Surging.Core.Consul
 
         private async Task<ServiceRoute[]> GetRoutes(IEnumerable<string> childrens)
         {
+
             childrens = childrens.ToArray();
             var routes = new List<ServiceRoute>(childrens.Count());
 
@@ -200,7 +206,11 @@ namespace Surging.Core.Consul
         {
             ServiceRoute result = null;
             var watcher = new NodeMonitorWatcher(_consul, _manager, path,
-                 async (oldData, newData) => await NodeChange(oldData, newData));
+                async (oldData, newData) => await NodeChange(oldData, newData), tmpPath => {
+                    var index = tmpPath.LastIndexOf("/");
+                    return _serviceHeartbeatManager.ExistsWhitelist(tmpPath.Substring(index + 1));
+                });
+
             var queryResult = await _consul.KV.Keys(path);
             if (queryResult.Response != null)
             {
@@ -216,17 +226,22 @@ namespace Surging.Core.Consul
 
         private async Task EnterRoutes()
         {
-            if (_routes != null && _routes.Length > 0)
-                return;
-            var watcher = new ChildrenMonitorWatcher(_consul, _manager, _configInfo.RoutePath,
+            //if (_routes != null && _routes.Length > 0)
+            //    return;
+            Action<string[]> action = null;
+            if (_configInfo.EnableChildrenMonitor)
+            {
+                var watcher = new ChildrenMonitorWatcher(_consul, _manager, _configInfo.RoutePath,
              async (oldChildrens, newChildrens) => await ChildrenChange(oldChildrens, newChildrens),
                (result) => ConvertPaths(result).Result);
+                action = currentData => watcher.SetCurrentData(currentData);
+            }
             if (_consul.KV.Keys(_configInfo.RoutePath).Result.Response?.Count() > 0)
             {
                 var result = await _consul.GetChildrenAsync(_configInfo.RoutePath);
                 var keys = await _consul.KV.Keys(_configInfo.RoutePath);
                 var childrens = result;
-                watcher.SetCurrentData(ConvertPaths(childrens).Result.Select(key => $"{_configInfo.RoutePath}{key}").ToArray());
+                action?.Invoke(ConvertPaths(childrens).Result.Select(key => $"{_configInfo.RoutePath}{key}").ToArray());
                 _routes = await GetRoutes(keys.Response);
             }
             else
@@ -333,7 +348,6 @@ namespace Surging.Core.Consul
             if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
                 _logger.LogInformation("路由数据更新成功。");
         }
-
-        #endregion 私有方法
+        #endregion
     }
 }

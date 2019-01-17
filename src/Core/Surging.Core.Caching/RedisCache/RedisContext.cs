@@ -17,7 +17,6 @@ namespace Surging.Core.Caching.RedisCache
     public class RedisContext
     {
         private readonly IHashAlgorithm _hashAlgorithm;
-
         /// <summary>
         /// 缓存对象集合容器池
         /// </summary>
@@ -37,7 +36,6 @@ namespace Surging.Core.Caching.RedisCache
         internal string _password = null;
 
         internal string _bucket = null;
-
         /// <summary>
         /// 默认缓存失效时间
         /// </summary>
@@ -85,7 +83,6 @@ namespace Surging.Core.Caching.RedisCache
         internal string _minSize = null;
 
         #region 构造函数
-
         /// <summary>
         /// redis数据上下文
         /// </summary>
@@ -142,8 +139,7 @@ namespace Surging.Core.Caching.RedisCache
             dicHash = new ConcurrentDictionary<string, ConsistentHash<ConsistentHashNode>>();
             InitSettingHashStorage();
         }
-
-        #endregion 构造函数
+        #endregion
 
         #region 属性
 
@@ -162,7 +158,6 @@ namespace Surging.Core.Caching.RedisCache
                 return _defaultExpireTime;
             }
         }
-
         /// <summary>
         /// 缓存对象集合容器池
         /// </summary>
@@ -174,8 +169,7 @@ namespace Surging.Core.Caching.RedisCache
         {
             get { return _cachingContextPool.Value; }
         }
-
-        #endregion 属性
+        #endregion
 
         #region 私有方法
 
@@ -209,7 +203,7 @@ namespace Surging.Core.Caching.RedisCache
                     {
                         db = dbs[dbs.Length - 1];
                     }
-                    hash.Add(new ConsistentHashNode()
+                    var node = new ConsistentHashNode()
                     {
                         Type = targetType,
                         Host = endpoints[0],
@@ -219,12 +213,13 @@ namespace Surging.Core.Caching.RedisCache
                         MaxSize = this._maxSize,
                         MinSize = this._minSize,
                         Db = db.ToString()
-                    });
+                    };
+                    hash.Add(node, string.Format("{0}:{1}", node.Host, node.Port));
                     dicHash.GetOrAdd(targetType.ToString(), hash);
                 });
             }
         }
 
-        #endregion 私有方法
+        #endregion
     }
 }

@@ -6,6 +6,7 @@ using Surging.Core.Consul.WatcherProvider;
 using Surging.Core.Consul.WatcherProvider.Implementation;
 using Surging.Core.CPlatform.Routing;
 using Surging.Core.CPlatform.Routing.Implementation;
+using Surging.Core.CPlatform.Runtime.Client;
 using Surging.Core.CPlatform.Runtime.Server;
 using Surging.Core.CPlatform.Serialization;
 using Surging.Core.CPlatform.Support;
@@ -28,10 +29,12 @@ namespace Surging.Core.Consul
         private ServiceCommandDescriptor[] _serviceCommands;
         private readonly ISerializer<string> _stringSerializer;
         private readonly IServiceRouteManager _serviceRouteManager;
+        private readonly IServiceHeartbeatManager _serviceHeartbeatManager;
 
         public ConsulServiceCommandManager(ConfigInfo configInfo, ISerializer<byte[]> serializer,
         ISerializer<string> stringSerializer, IServiceRouteManager serviceRouteManager, IClientWatchManager manager, IServiceEntryManager serviceEntryManager,
-            ILogger<ConsulServiceCommandManager> logger, bool enableChildrenMonitor = false) : base(stringSerializer, serviceEntryManager)
+            ILogger<ConsulServiceCommandManager> logger,
+            IServiceHeartbeatManager serviceHeartbeatManager) : base(stringSerializer, serviceEntryManager)
         {
             _configInfo = configInfo;
             _serializer = serializer;
@@ -39,9 +42,11 @@ namespace Surging.Core.Consul
             _stringSerializer = stringSerializer;
             _manager = manager;
             _serviceRouteManager = serviceRouteManager;
+            _serviceHeartbeatManager = serviceHeartbeatManager;
             _consul = new ConsulClient(config =>
             {
                 config.Address = new Uri($"http://{configInfo.Host}:{configInfo.Port}");
+
             }, null, h => { h.UseProxy = false; h.Proxy = null; });
             EnterServiceCommands().Wait();
             _serviceRouteManager.Removed += ServiceRouteManager_Removed;
@@ -97,6 +102,7 @@ namespace Surging.Core.Consul
             if (newCommand == null)
                 //触发删除事件。
                 OnRemoved(new ServiceCommandEventArgs(oldCommand));
+
             else if (oldCommand == null)
                 OnCreated(new ServiceCommandEventArgs(newCommand));
             else
@@ -149,6 +155,8 @@ namespace Surging.Core.Consul
             _consul.KV.Delete($"{_configInfo.CommandPath}{e.Route.ServiceDescriptor.Id}").Wait();
         }
 
+
+
         private ServiceCommandDescriptor GetServiceCommand(byte[] data)
         {
             if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -185,7 +193,11 @@ namespace Surging.Core.Consul
         {
             ServiceCommandDescriptor result = null;
             var watcher = new NodeMonitorWatcher(_consul, _manager, path,
-                  (oldData, newData) => NodeChange(oldData, newData));
+              (oldData, newData) => NodeChange(oldData, newData), tmpPath =>
+              {
+                  var index = tmpPath.LastIndexOf("/");
+                  return _serviceHeartbeatManager.ExistsWhitelist(tmpPath.Substring(index + 1));
+              });
             var queryResult = await _consul.KV.Keys(path);
             if (queryResult.Response != null)
             {
@@ -224,15 +236,20 @@ namespace Surging.Core.Consul
         {
             if (_serviceCommands != null)
                 return;
-            var watcher = new ChildrenMonitorWatcher(_consul, _manager, _configInfo.CommandPath,
-             async (oldChildrens, newChildrens) => await ChildrenChange(oldChildrens, newChildrens),
-                    (result) => ConvertPaths(result));
+            Action<string[]> action = null;
+            if (_configInfo.EnableChildrenMonitor)
+            {
+                var watcher = new ChildrenMonitorWatcher(_consul, _manager, _configInfo.CommandPath,
+                async (oldChildrens, newChildrens) => await ChildrenChange(oldChildrens, newChildrens),
+                       (result) => ConvertPaths(result));
+                action = currentData => watcher.SetCurrentData(currentData);
+            }
             if (_consul.KV.Keys(_configInfo.CommandPath).Result.Response?.Count() > 0)
             {
                 var result = await _consul.GetChildrenAsync(_configInfo.CommandPath);
                 var keys = await _consul.KV.Keys(_configInfo.CommandPath);
                 var childrens = result;
-                watcher.SetCurrentData(ConvertPaths(childrens).Select(key => $"{_configInfo.CommandPath}{key}").ToArray());
+                action?.Invoke(ConvertPaths(childrens).Select(key => $"{_configInfo.CommandPath}{key}").ToArray());
                 _serviceCommands = await GetServiceCommands(keys.Response);
             }
             else

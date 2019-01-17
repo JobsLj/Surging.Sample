@@ -49,6 +49,7 @@ using System.Text.RegularExpressions;
 
 namespace Surging.Core.CPlatform
 {
+
     /// <summary>
     /// 服务构建者。
     /// </summary>
@@ -340,15 +341,7 @@ namespace Surging.Core.CPlatform
         public static IServiceBuilder AddClientRuntime(this IServiceBuilder builder)
         {
             var services = builder.Services;
-            if (string.IsNullOrEmpty(AppConfig.ServerOptions.MappingIP))
-            {
-                services.RegisterType(typeof(DefaultHealthCheckService)).As(typeof(IHealthCheckService)).SingleInstance();
-            }
-            else
-            {
-                services.RegisterType(typeof(ExistMappingIpHealthCheckService)).As(typeof(IHealthCheckService)).SingleInstance();
-            }
-
+            services.RegisterType(typeof(DefaultHealthCheckService)).As(typeof(IHealthCheckService)).SingleInstance();
             services.RegisterType(typeof(DefaultAddressResolver)).As(typeof(IAddressResolver)).SingleInstance();
             services.RegisterType(typeof(RemoteInvokeService)).As(typeof(IRemoteInvokeService)).SingleInstance();
             return builder.UseAddressSelector().AddRuntime().AddClusterSupport();
@@ -419,14 +412,7 @@ namespace Surging.Core.CPlatform
         {
             var services = builder.Services;
 
-            if (string.IsNullOrEmpty(AppConfig.ServerOptions.MappingIP))
-            {
-                services.RegisterType(typeof(DefaultHealthCheckService)).As(typeof(IHealthCheckService)).SingleInstance();
-            }
-            else
-            {
-                services.RegisterType(typeof(ExistMappingIpHealthCheckService)).As(typeof(IHealthCheckService)).SingleInstance();
-            }
+            services.RegisterType(typeof(DefaultHealthCheckService)).As(typeof(IHealthCheckService)).SingleInstance();
             services.RegisterType(typeof(DefaultAddressResolver)).As(typeof(IAddressResolver)).SingleInstance();
             services.RegisterType(typeof(RemoteInvokeService)).As(typeof(IRemoteInvokeService)).SingleInstance();
             return builder.UseAddressSelector().AddClusterSupport();
@@ -447,20 +433,13 @@ namespace Surging.Core.CPlatform
             services.RegisterType(typeof(AuthorizationAttribute)).As(typeof(IAuthorizationFilter)).SingleInstance();
             services.RegisterType(typeof(AuthorizationAttribute)).As(typeof(IFilter)).SingleInstance();
             services.RegisterType(typeof(DefaultServiceRouteProvider)).As(typeof(IServiceRouteProvider)).SingleInstance();
-            if (string.IsNullOrEmpty(AppConfig.ServerOptions.MappingIP))
-            {
-                services.RegisterType(typeof(DefaultServiceRouteFactory)).As(typeof(IServiceRouteFactory)).SingleInstance();
-                services.RegisterType(typeof(DefaultServiceSubscriberFactory)).As(typeof(IServiceSubscriberFactory)).SingleInstance();
-            }
-            else
-            {
-                services.RegisterType(typeof(ExistMappingIpServiceRouteFactory)).As(typeof(IServiceRouteFactory)).SingleInstance();
-                services.RegisterType(typeof(ExistMappingIpServiceSubscriberFactory)).As(typeof(IServiceSubscriberFactory)).SingleInstance();
-            }
+            services.RegisterType(typeof(DefaultServiceRouteFactory)).As(typeof(IServiceRouteFactory)).SingleInstance();
+            services.RegisterType(typeof(DefaultServiceSubscriberFactory)).As(typeof(IServiceSubscriberFactory)).SingleInstance();
 
             services.RegisterType(typeof(ServiceTokenGenerator)).As(typeof(IServiceTokenGenerator)).SingleInstance();
             services.RegisterType(typeof(HashAlgorithm)).As(typeof(IHashAlgorithm)).SingleInstance();
             services.RegisterType(typeof(ServiceEngineLifetime)).As(typeof(IServiceEngineLifetime)).SingleInstance();
+            services.RegisterType(typeof(DefaultServiceHeartbeatManager)).As(typeof(IServiceHeartbeatManager)).SingleInstance();
             return new ServiceBuilder(services)
                 .AddJsonSerialization()
                 .UseJsonCodec();
@@ -671,6 +650,7 @@ namespace Surging.Core.CPlatform
                 .Where(t => typeof(ITransientDependency).GetTypeInfo().IsAssignableFrom(t)).AsImplementedInterfaces().AsSelf().InstancePerDependency();
             }
             return builder;
+
         }
 
         private static List<Assembly> GetSystemModules()
@@ -693,7 +673,13 @@ namespace Surging.Core.CPlatform
             var result = new Dictionary<string, string>();
             list.ForEach(p =>
             {
-                result.Add(p.TypeName, p.Using);
+                var usingModule = p.Using;
+                if (AppConfig.ServerOptions.Environment != RuntimeEnvironment.Development)
+                {
+                    usingModule = p.Using.Replace("KestrelHttpModule", "").Replace(";;", ";");
+                }
+
+                result.Add(p.TypeName, usingModule);
             });
             return result;
         }
@@ -785,4 +771,5 @@ namespace Surging.Core.CPlatform
             }
         }
     }
+
 }
