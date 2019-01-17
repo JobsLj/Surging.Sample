@@ -1,9 +1,9 @@
 <Project>
   <Import Project="..\..\Shares\Props\common.props" />
   <ItemGroup>
-    <PackageReference Include="Surging.Core.AutoMapper" Version="0.5.0-bate.1" />
-    <PackageReference Include="Surging.Core.Schedule" Version="0.5.0-bate.1" />
-    <PackageReference Include="Surging.Core.System" Version="0.5.0-bate.1" />
+    <PackageReference Include="Surging.Core.AutoMapper" Version="0.5.0-bate.2" />
+    <PackageReference Include="Surging.Core.Schedule" Version="0.5.0-bate.2" />
+    <PackageReference Include="Surging.Core.System" Version="0.5.0-bate.2" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.13" />

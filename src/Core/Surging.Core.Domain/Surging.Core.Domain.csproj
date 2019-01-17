@@ -2,7 +2,7 @@
 
   <Import Project="..\..\..\common.props" />
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <Description>对领域层进行封装</Description>
   </PropertyGroup>
 

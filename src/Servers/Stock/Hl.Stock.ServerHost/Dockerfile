@@ -1,11 +1,11 @@
-FROM microsoft/dotnet:2.1-runtime AS base
+FROM microsoft/dotnet:2.2.0-runtime AS base
 WORKDIR /app
 ARG rpc_port=100
 ARG http_port=8080
 ARG ws_port=96
 EXPOSE ${rpc_port} ${http_port} ${ws_port}
 
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
 COPY . .
 ARG sln_name
