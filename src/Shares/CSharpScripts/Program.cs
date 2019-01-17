@@ -9,6 +9,7 @@ using Surging.Core.EventBusRabbitMQ.Configurations;
 using Surging.Core.ProxyGenerator;
 using Surging.Core.ServiceHosting;
 using Surging.Core.ServiceHosting.Internal.Implementation;
+using Surging.Core.System.Intercept;
 using System;
 
 namespace Hl.ServiceHost
@@ -26,6 +27,7 @@ namespace Hl.ServiceHost
                            .AddClientProxy()
                            .AddRelateServiceRuntime()
                            .AddConfigurationWatch()
+                           .AddClientIntercepted(typeof(CacheProviderInterceptor))
                            .AddServiceEngine(typeof(SurgingServiceEngine));
 
                           builder.Register(p => new CPlatformContainer(ServiceLocator.Current));
