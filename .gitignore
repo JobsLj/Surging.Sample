@@ -274,3 +274,6 @@ __pycache__/
 *.pyc
 
 api/
+
+cacheSettings.json
+!**/Shares/**/cacheSettings.json
