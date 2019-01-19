@@ -36,7 +36,7 @@ services:
       MYSQL_USER: "surging"
       MYSQL_PASSWORD: "Surging!P4ss"
     volumes:
-      - D:\mysql\data:/var/lib/mysql
+      - .\mysql\data:/var/lib/mysql
     ports:
       - "13306:3306"
     networks:
