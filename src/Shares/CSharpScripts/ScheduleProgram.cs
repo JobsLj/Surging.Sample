@@ -27,8 +27,7 @@ namespace Hl.ServiceHost
                     {
                         // 增加微服务
                         option.AddServiceRuntime()
-                            .AddClientProxy()
-                            .AddRelateServiceRuntime()
+                            .AddRelateService()
                             .AddConfigurationWatch()
                             .AddClientIntercepted(typeof(CacheProviderInterceptor))
                             .AddServiceEngine(typeof(SurgingServiceEngine));

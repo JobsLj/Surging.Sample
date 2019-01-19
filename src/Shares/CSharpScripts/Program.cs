@@ -24,8 +24,7 @@ namespace Hl.ServiceHost
                      builder.AddMicroService(option =>
                       {
                           option.AddServiceRuntime()
-                           .AddClientProxy()
-                           .AddRelateServiceRuntime()
+                           .AddRelateService()
                            .AddConfigurationWatch()
                            .AddClientIntercepted(typeof(CacheProviderInterceptor))
                            .AddServiceEngine(typeof(SurgingServiceEngine));
